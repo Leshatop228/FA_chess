@@ -1,36 +1,40 @@
 class Board:
-    """
-    Класс, представляющий шахматную доску. Управляет состоянием доски, фигурами, ходами и историей игры.
+    """Chess board that manages the board state, pieces, moves, and game history.
 
-    Атрибуты:
-        NONE (None): Константа, обозначающая пустую клетку на доске.
-        move_count (int): Счетчик ходов.
-        history (list): Список ходов, хранящий объекты класса Move.
-        markup (dict): Словарь, представляющий состояние доски. Ключи — буквы столбцов (a-h), значения — списки фигур или None.
+    Attributes:
+        NONE (None): Constant representing an empty square on the board.
+        move_count (int): Counter for moves.
+        history (list): List of Move objects representing the move history.
+        markup (dict): Dictionary representing the board state. Keys are column letters ('a'-'h') and values are lists of pieces or None.
     """
-
 
     def __init__(self):
-        """
-        Инициализирует шахматную доску, расставляя фигуры в начальные позиции.
-        """
-
+        """Initializes the chess board with the starting positions."""
 
         self.NONE = None
         self.move_count = 0
         self.history = []
         self.markup = {
-            'a': [Rook('white'), Magnet('white'), self.NONE, self.NONE, self.NONE, self.NONE, Magnet('black'), Rook('black')],
-            'b': [Knight('white'), Pawn('white'), self.NONE, self.NONE, self.NONE, self.NONE, Pawn('black'), Knight('black')],
-            'c': [Princess('white'), Pawn('white'), self.NONE, self.NONE, self.NONE, self.NONE, Pawn('black'), Princess('black')],
-            'd': [Queen('white'), Pawn('white'), self.NONE, self.NONE, self.NONE, self.NONE, Pawn('black'), Queen('black')],
-            'e': [King('white'), Pawn('white'), self.NONE, self.NONE, self.NONE, self.NONE, Pawn('black'), King('black')],
-            'f': [Bishop('white'), Pawn('white'), self.NONE, self.NONE, self.NONE, self.NONE, Pawn('black'), Bishop('black')],
-            'g': [Knight('white'), Pawn('white'), self.NONE, self.NONE, self.NONE, self.NONE, Pawn('black'), Knight('black')],
-            'h': [Rook('white'), Kangaroo('white'), self.NONE, self.NONE, self.NONE, self.NONE, Kangaroo('black'), Rook('black')],
+            'a': [Rook('white'), Magnet('white'), self.NONE, self.NONE, self.NONE, self.NONE, Magnet('black'),
+                  Rook('black')],
+            'b': [Knight('white'), Pawn('white'), self.NONE, self.NONE, self.NONE, self.NONE, Pawn('black'),
+                  Knight('black')],
+            'c': [Princess('white'), Pawn('white'), self.NONE, self.NONE, self.NONE, self.NONE, Pawn('black'),
+                  Princess('black')],
+            'd': [Queen('white'), Pawn('white'), self.NONE, self.NONE, self.NONE, self.NONE, Pawn('black'),
+                  Queen('black')],
+            'e': [King('white'), Pawn('white'), self.NONE, self.NONE, self.NONE, self.NONE, Pawn('black'),
+                  King('black')],
+            'f': [Bishop('white'), Pawn('white'), self.NONE, self.NONE, self.NONE, self.NONE, Pawn('black'),
+                  Bishop('black')],
+            'g': [Knight('white'), Pawn('white'), self.NONE, self.NONE, self.NONE, self.NONE, Pawn('black'),
+                  Knight('black')],
+            'h': [Rook('white'), Kangaroo('white'), self.NONE, self.NONE, self.NONE, self.NONE, Kangaroo('black'),
+                  Rook('black')],
         }
 
     def draw_board(self):
+        """Prints the board to the console in a formatted layout."""
         print("  a b c d e f g h")
         print("---------------------")
         for row in range(8, 0, -1):
@@ -47,18 +51,14 @@ class Board:
         print("  a b c d e f g h")
 
     def move_figure(self, start, end):
-        """
-        Перемещает фигуру с начальной позиции на конечную.
+        """Moves a piece from the starting position to the ending position.
 
-        Параметры:
-            start (tuple): Кортеж из двух элементов (str, int), представляющий начальную позицию фигуры.
-            end (tuple): Кортеж из двух элементов (str, int), представляющий конечную позицию фигуры.
+        Args:
+            start (tuple): A tuple (str, int) representing the piece's starting position.
+            end (tuple): A tuple (str, int) representing the piece's ending position.
 
-        Возвращает:
-            bool: True, если ход выполнен успешно, иначе False.
-
-        Исключения:
-            None
+        Returns:
+            bool: True if the move was successful, otherwise False.
         """
 
         start_col, start_row = start
@@ -74,11 +74,8 @@ class Board:
             print("Не допустимый ход")
             return False
 
-
-        move = Move(start,end,point,target)
+        move = Move(start, end, point, target)
         self.history.append(move)
-
-
 
         if isinstance(point, Magnet):
             start_col_num = ord(start_col) - ord('a')
@@ -136,29 +133,26 @@ class Board:
         return True
 
     def _is_enemy(self, figure1, figure2):
-        """
-        Проверяет, являются ли две фигуры врагами (разного цвета).
+        """Checks whether two pieces are enemies (of different colors).
 
-        Параметры:
-            figure1 (Figure): Первая фигура.
-            figure2 (Figure): Вторая фигура.
+        Args:
+            figure1 (Figure): The first piece.
+            figure2 (Figure): The second piece.
 
-        Возвращает:
-            bool: True, если фигуры враги, иначе False.
+        Returns:
+            bool: True if the pieces are enemies, otherwise False.
         """
         return figure1.color != figure2.color
 
     def undo_move(self, turn):
+        """Reverts the last move and restores the board state.
+
+        Args:
+            turn (str): The current player's turn ('white' or 'black').
+
+        Returns:
+            str: The player's turn after undoing the move.
         """
-        Откатывает последний ход и восстанавливает состояние доски.
-
-        Параметры:
-            turn (str): Очередь игрока ('white' или 'black').
-
-        Возвращает:
-            str: Очередь игрока после отката.
-        """
-
 
         if not self.history:
             print("Нет ходов для отката")
@@ -170,7 +164,6 @@ class Board:
         end_col, end_row = last_move.end
 
         self.markup[start_col][start_row - 1] = last_move.point
-
 
         self.markup[end_col][end_row - 1] = last_move.target
 
@@ -188,10 +181,7 @@ class Board:
         return turn
 
     def Whose_move(self):
-        """
-        Основной игровой цикл, который поочередно запрашивает ходы у игроков.
-        """
-
+        """Main game loop that alternately requests moves from the players."""
 
         turn = 'white'  # Начинают белые
         while True:
@@ -207,7 +197,6 @@ class Board:
                 print(f"Всего сделано ходов: {self.move_count}")
                 break
 
-
             end = self.get_position(turn)
             if end == '':
                 print("Игра завершена.")
@@ -221,16 +210,14 @@ class Board:
                     turn = 'white'
 
     def get_position(self, turn):
+        """Prompts the player to input the coordinates of the piece to move.
+
+        Args:
+            turn (str): The player's turn ('white' or 'black').
+
+        Returns:
+            tuple: A tuple (str, int) representing the piece's position.
         """
-        Запрашивает у игрока координаты фигуры для хода.
-
-        Параметры:
-            turn (str): Очередь игрока ('white' или 'black').
-
-        Возвращает:
-            tuple: Кортеж из двух элементов (str, int), представляющий позицию фигуры.
-        """
-
 
         while True:
             # user_input = input(f"Введите координаты фигуры :  {'белых' if turn == 'white' else 'черных'} (например, 'a2'): ")
@@ -241,7 +228,6 @@ class Board:
             if user_input == 'undo':
                 turn = self.undo_move(turn)
                 continue
-
 
             if len(user_input) == 0:
                 return ''
@@ -260,16 +246,14 @@ class Board:
 
 
 class Move:
-    """
-    Класс, представляющий ход фигуры.
+    """Represents a move of a chess piece.
 
-    Атрибуты:
-        start (tuple): Начальная позиция фигуры.
-        end (tuple): Конечная позиция фигуры.
-        point (Figure): Фигура, которая была перемещена.
-        target (Figure): Фигура, которая была съедена (если есть).
+    Attributes:
+        start (tuple): The starting position of the piece.
+        end (tuple): The ending position of the piece.
+        point (Figure): The piece that was moved.
+        target (Figure): The piece that was captured (if any).
     """
-
 
     def __init__(self, start, end, point, target):
         self.start = start
@@ -278,25 +262,20 @@ class Move:
         self.target = target
 
 
-
 class Figure:
+    """Base class for all chess pieces.
+
+    Attributes:
+        name (str): The name of the piece.
+        color (str): The color of the piece ('white' or 'black').
+
+    Methods:
+        can_move(start, end, board=None): Checks if the piece can move from the starting position to the ending position.
     """
-    Базовый класс для всех шахматных фигур.
-
-    Атрибуты:
-        name (str): Название фигуры.
-        color (str): Цвет фигуры ('white' или 'black').
-
-    Методы:
-        can_move(start, end, board=None): Проверяет, может ли фигура переместиться с начальной позиции на конечную.
-    """
-
 
     def __init__(self, name, color):
         self.name = name
         self.color = color
-
-
 
     def can_move(self, start, end):
         """
@@ -310,122 +289,105 @@ class Figure:
             bool: True, если ход допустим, иначе False.
         """
 
-
         pass
 
+
 class Pawn(Figure):
-    """
-    Класс, представляющий пешку.
+    """Represents a pawn.
 
-    Наследуется от класса Figure и переопределяет метод can_move для реализации правил перемещения пешки.
+    Inherits from Figure and overrides the can_move method to implement pawn movement rules.
     """
-
 
     def __init__(self, color):
         super().__init__("Pawn", color)
 
-
-
     def can_move(self, start, end, board=None):
+        """Checks if the pawn can move from the starting position to the ending position.
+
+        Args:
+            start (tuple): A tuple (str, int) representing the pawn's starting position.
+            end (tuple): A tuple (str, int) representing the pawn's ending position.
+            board (Board, optional): The board on which the move is being made.
+
+        Returns:
+            bool: True if the move is valid, otherwise False.
         """
-        Проверяет, может ли пешка переместиться с начальной позиции на конечную.
-
-        Параметры:
-            start (tuple): Кортеж из двух элементов (str, int), представляющий начальную позицию пешки.
-            end (tuple): Кортеж из двух элементов (str, int), представляющий конечную позицию пешки.
-            board (Board, опционально): Доска, на которой выполняется ход.
-
-        Возвращает:
-            bool: True, если ход допустим, иначе False.
-        """
-
 
         start_row, start_col = start
         end_row, end_col = end
 
         if self.color == 'white':
-            return (start_row + 1 == end_row and start_col == end_col) or (start_row == 1 and end_row == 3 and start_col == end_col)
+            return (start_row + 1 == end_row and start_col == end_col) or (
+                    start_row == 1 and end_row == 3 and start_col == end_col)
         else:
-            return (start_row - 1 == end_row and start_col == end_col) or (start_row == 6 and end_row == 4 and start_col == end_col)
+            return (start_row - 1 == end_row and start_col == end_col) or (
+                    start_row == 6 and end_row == 4 and start_col == end_col)
 
     def __str__(self):
-        """
-        Магический метод, возвращающий строковое представление объекта.
+        """Returns the string representation of the pawn.
 
-        Возвращает:
-            str: Строковое представление объекта.
+        Returns:
+            str: The first letter of the pawn's name.
         """
-
 
         return self.name[0]
 
+
 class Rook(Figure):
-    """
-    Класс, представляющий ладью.
+    """Represents a rook.
 
-    Наследуется от класса Figure и переопределяет метод can_move для реализации правил перемещения ладьи.
+    Inherits from Figure and overrides the can_move method to implement rook movement rules.
     """
-
 
     def __init__(self, color):
         super().__init__('Rook', color)
 
-
-
     def can_move(self, start, end, board=None):
+        """Checks if the rook can move from the starting position to the ending position.
+
+        Args:
+            start (tuple): A tuple (str, int) representing the rook's starting position.
+            end (tuple): A tuple (str, int) representing the rook's ending position.
+            board (Board, optional): The board on which the move is being made.
+
+        Returns:
+            bool: True if the move is valid, otherwise False.
         """
-        Проверяет, может ли ладья переместиться с начальной позиции на конечную.
-
-        Параметры:
-            start (tuple): Кортеж из двух элементов (str, int), представляющий начальную позицию ладьи.
-            end (tuple): Кортеж из двух элементов (str, int), представляющий конечную позицию ладьи.
-            board (Board, опционально): Доска, на которой выполняется ход.
-
-        Возвращает:
-            bool: True, если ход допустим, иначе False.
-        """
-
 
         start_row, start_col = start
         end_row, end_col = end
         return start_row == end_row or start_col == end_col
 
     def __str__(self):
-        """
-        Магический метод, возвращающий строковое представление объекта.
+        """Returns the string representation of the rook.
 
-        Возвращает:
-            str: Строковое представление объекта.
+        Returns:
+            str: The first letter of the rook's name.
         """
-
 
         return self.name[0]
 
+
 class Bishop(Figure):
-    """
-    Класс, представляющий слона.
+    """Represents a bishop.
 
-    Наследуется от класса Figure и переопределяет метод can_move для реализации правил перемещения слона.
+    Inherits from Figure and overrides the can_move method to implement bishop movement rules.
     """
-
 
     def __init__(self, color):
         super().__init__('Bishop', color)
 
-
     def can_move(self, start, end, board=None):
+        """Checks if the bishop can move from the starting position to the ending position.
+
+        Args:
+            start (tuple): A tuple (str, int) representing the bishop's starting position.
+            end (tuple): A tuple (str, int) representing the bishop's ending position.
+            board (Board, optional): The board on which the move is being made.
+
+        Returns:
+            bool: True if the move is valid, otherwise False.
         """
-        Проверяет, может ли слон переместиться с начальной позиции на конечную.
-
-        Параметры:
-            start (tuple): Кортеж из двух элементов (str, int), представляющий начальную позицию слона.
-            end (tuple): Кортеж из двух элементов (str, int), представляющий конечную позицию слона.
-            board (Board, опционально): Доска, на которой выполняется ход.
-
-        Возвращает:
-            bool: True, если ход допустим, иначе False.
-        """
-
 
         start_row, start_col = start
         end_row, end_col = end
@@ -434,83 +396,72 @@ class Bishop(Figure):
         return abs(start_row - end_row) == abs(start_col_num - end_col_num)
 
     def __str__(self):
-        """
-        Магический метод, возвращающий строковое представление объекта.
+        """Returns the string representation of the bishop.
 
-        Возвращает:
-            str: Строковое представление объекта.
+        Returns:
+            str: The first letter of the bishop's name.
         """
-
 
         return self.name[0]
 
-class Knight(Figure):
-    """
-    Класс, представляющий коня.
 
-    Наследуется от класса Figure и переопределяет метод can_move для реализации правил перемещения коня.
+class Knight(Figure):
+    """Represents a knight.
+
+    Inherits from Figure and overrides the can_move method to implement knight movement rules.
     """
+
     def __init__(self, color):
         super().__init__('Knight', color)
 
     def can_move(self, start, end, board=None):
+        """Checks if the knight can move from the starting position to the ending position.
+
+        Args:
+            start (tuple): A tuple (str, int) representing the knight's starting position.
+            end (tuple): A tuple (str, int) representing the knight's ending position.
+            board (Board, optional): The board on which the move is being made.
+
+        Returns:
+            bool: True if the move is valid, otherwise False.
         """
-        Проверяет, может ли король переместиться с начальной позиции на конечную.
-
-        Параметры:
-            start (tuple): Кортеж из двух элементов (str, int), представляющий начальную позицию короля.
-            end (tuple): Кортеж из двух элементов (str, int), представляющий конечную позицию короля.
-            board (Board, опционально): Доска, на которой выполняется ход.
-
-        Возвращает:
-            bool: True, если ход допустим, иначе False.
-        """
-
 
         start_row, start_col = start
         end_row, end_col = end
         start_col_num = ord(start_col) - ord('a')
         end_col_num = ord(end_col) - ord('a')
-        return ((abs(start_row - end_row) == 2 and abs(start_col_num - end_col_num) == 1) or (abs(start_row - end_row) == 1 and abs(start_col_num - end_col_num) == 2))
+        return ((abs(start_row - end_row) == 2 and abs(start_col_num - end_col_num) == 1) or (
+                abs(start_row - end_row) == 1 and abs(start_col_num - end_col_num) == 2))
 
     def __str__(self):
+        """Returns the string representation of the knight.
+
+        Returns:
+            str: The second letter of the knight's name.
         """
-        Магический метод, возвращающий строковое представление объекта.
-
-        Возвращает:
-            str: Строковое представление объекта.
-        """
-
-
         return self.name[1]
 
+
 class King(Figure):
-    """
-    Класс, представляющий короля.
+    """Represents a king.
 
-    Наследуется от класса Figure и переопределяет метод can_move для реализации правил перемещения короля.
+    Inherits from Figure and overrides the can_move method to implement king movement rules.
     """
-
 
     def __init__(self, color):
         super().__init__('King', color)
 
-
-
     def can_move(self, start, end, board=None):
+        """Checks if the king can move from the starting position to the ending position.
+
+        Args:
+            start (tuple): A tuple (str, int) representing the king's starting position.
+            end (tuple): A tuple (str, int) representing the king's ending position.
+            board (Board, optional): The board on which the move is being made.
+
+        Returns:
+            bool: True if the move is valid, otherwise False.
         """
-        Проверяет, может ли король переместиться с начальной позиции на конечную.
-
-        Параметры:
-            start (tuple): Кортеж из двух элементов (str, int), представляющий начальную позицию короля.
-            end (tuple): Кортеж из двух элементов (str, int), представляющий конечную позицию короля.
-            board (Board, опционально): Доска, на которой выполняется ход.
-
-        Возвращает:
-            bool: True, если ход допустим, иначе False
-        """
-
-
         start_row, start_col = start
         end_row, end_col = end
         start_col_num = ord(start_col) - ord('a')
@@ -518,42 +469,34 @@ class King(Figure):
         return abs(start_row - end_row) <= 1 and abs(start_col_num - end_col_num) <= 1
 
     def __str__(self):
+        """Returns the string representation of the king.
+
+        Returns:
+            str: The first letter of the king's name.
         """
-        Магический метод, возвращающий строковое представление объекта.
-
-        Возвращает:
-            str: Строковое представление объекта.
-        """
-
-
         return self.name[0]
 
+
 class Queen(Figure):
-    """
-    Класс, представляющий ферзя.
+    """Represents a queen.
 
-    Наследуется от класса Figure и переопределяет метод can_move для реализации правил перемещения ферзя.
+    Inherits from Figure and overrides the can_move method to implement queen movement rules.
     """
-
 
     def __init__(self, color):
         super().__init__('Queen', color)
 
-
-
     def can_move(self, start, end, board=None):
+        """Checks if the queen can move from the starting position to the ending position.
+
+        Args:
+            start (tuple): A tuple (str, int) representing the queen's starting position.
+            end (tuple): A tuple (str, int) representing the queen's ending position.
+            board (Board, optional): The board on which the move is being made.
+
+        Returns:
+            bool: True if the move is valid, otherwise False.
         """
-        Проверяет, может ли ферзь переместиться с начальной позиции на конечную.
-
-        Параметры:
-            start (tuple): Кортеж из двух элементов (str, int), представляющий начальную позицию ферзя.
-            end (tuple): Кортеж из двух элементов (str, int), представляющий конечную позицию ферзя.
-            board (Board, опционально): Доска, на которой выполняется ход.
-
-        Возвращает:
-            bool: True, если ход допустим, иначе False.
-        """
-
 
         start_row, start_col = start
         end_row, end_col = end
@@ -568,42 +511,34 @@ class Queen(Figure):
             return False
 
     def __str__(self):
+        """Returns the string representation of the queen.
+
+        Returns:
+            str: The first letter of the queen's name.
         """
-        Магический метод, возвращающий строковое представление объекта.
-
-        Возвращает:
-            str: Строковое представление объекта.
-        """
-
-
         return self.name[0]
 
+
 class Magnet(Figure):
-    """
-    Класс, представляющий магнит.
+    """Represents a magnet.
 
-    Наследуется от класса Figure и переопределяет метод can_move для реализации правил перемещения магнита.
+    Inherits from Figure and overrides the can_move method to implement magnet movement rules.
     """
-
 
     def __init__(self, color):
         super().__init__("Magnet", color)
 
-
-
     def can_move(self, start, end, board=None):
+        """Checks if the magnet can move from the starting position to the ending position.
+
+        Args:
+            start (tuple): A tuple (str, int) representing the magnet's starting position.
+            end (tuple): A tuple (str, int) representing the magnet's ending position.
+            board (Board, optional): The board on which the move is being made.
+
+        Returns:
+            bool: True if the move is valid, otherwise False.
         """
-        Проверяет, может ли магнит переместиться с начальной позиции на конечную.
-
-        Параметры:
-            start (tuple): Кортеж из двух элементов (str, int), представляющий начальную позицию магнита.
-            end (tuple): Кортеж из двух элементов (str, int), представляющий конечную позицию магнита.
-            board (Board, опционально): Доска, на которой выполняется ход.
-
-        Возвращает:
-            bool: True, если ход допустим, иначе False.
-        """
-
 
         start_row, start_col = start
         end_row, end_col = end
@@ -624,126 +559,104 @@ class Magnet(Figure):
                     return False
 
     def __str__(self):
+        """Returns the string representation of the magnet.
+
+        Returns:
+            str: The first letter of the magnet's name.
         """
-        Магический метод, возвращающий строковое представление объекта.
-
-        Возвращает:
-            str: Строковое представление объекта.
-        """
-
-
         return self.name[0]
 
+
 class Kangaroo(Figure):
-    """
-    Класс, представляющий кенгуру.
+    """Represents a kangaroo.
 
-    Наследуется от класса Figure и переопределяет метод can_move для реализации правил перемещения кенгуру.
+    Inherits from Figure and overrides the can_move method to implement kangaroo movement rules.
     """
-
 
     def __init__(self, color):
         super().__init__("Kangaroo", color)
 
-
-
     def can_move(self, start, end, board=None):
+        """Checks if the kangaroo can move from the starting position to the ending position.
+
+        Args:
+            start (tuple): A tuple (str, int) representing the kangaroo's starting position.
+            end (tuple): A tuple (str, int) representing the kangaroo's ending position.
+            board (Board, optional): The board on which the move is being made.
+
+        Returns:
+            bool: True if the move is valid, otherwise False.
         """
-        Проверяет, может ли кенгуру переместиться с начальной позиции на конечную.
-
-        Параметры:
-            start (tuple): Кортеж из двух элементов (str, int), представляющий начальную позицию кенгуру.
-            end (tuple): Кортеж из двух элементов (str, int), представляющий конечную позицию кенгуру.
-            board (Board, опционально): Доска, на которой выполняется ход.
-
-        Возвращает:
-            bool: True, если ход допустим, иначе False.
-        """
-
-
         start_row, start_col = start
         end_row, end_col = end
         start_col_num = ord(start_col) - ord('a')
         end_col_num = ord(end_col) - ord('a')
 
-
         row_diff = abs(start_row - end_row)
         col_diff = abs(start_col_num - end_col_num)
 
-        if (row_diff == 3 and col_diff == 0) or (row_diff == 0 and col_diff == 3) or  (row_diff == 3 and col_diff == 3):
+        if (row_diff == 3 and col_diff == 0) or (row_diff == 0 and col_diff == 3) or (row_diff == 3 and col_diff == 3):
             return True
         else:
             return False
 
     def __str__(self):
+        """Returns the string representation of the kangaroo.
+
+        Returns:
+            str: The second letter of the kangaroo's name.
         """
-        Магический метод, возвращающий строковое представление объекта.
-
-        Возвращает:
-            str: Строковое представление объекта.
-        """
-
-
         return self.name[1]
 
 
 class Princess(Figure):
-    """
-    Класс, представляющий принцессу.
+    """Represents a princess.
 
-    Наследуется от класса Figure и переопределяет метод can_move для реализации правил перемещения принцессы.
+    Inherits from Figure and overrides the can_move method to implement princess movement rules.
     """
-
 
     def __init__(self, color):
         super().__init__("Princess", color)
         self.has_eaten = False
 
-        def can_eat_enemy(self, target):
-            """Проверяет, может ли принцесса съесть фигуру"""
-            if self.has_eaten:
-                return False
-            elif target is None:
-                return False
-            elif target.color == self.color:
-                return False
-            elif target.name == "Queen":
-                return False
-            else:
-                return True
+    def can_eat_enemy(self, target):
+        """Checks if the princess can capture an enemy piece."""
+        if self.has_eaten:
+            return False
+        elif target is None:
+            return False
+        elif target.color == self.color:
+            return False
+        elif target.name == "Queen":
+            return False
+        else:
+            return True
 
     def can_move_like_king(self, start_row, start_col_num, end_row, end_col_num):
-        """Проверяет, может ли принцесса пойти на 1 клетку"""
-
-
+        """Checks if the princess can move like a king (one square in any direction)."""
         row_diff = abs(start_row - end_row)
         col_diff = abs(start_col_num - end_col_num)
         return row_diff <= 1 and col_diff <= 1
 
     def can_move(self, start, end, board=None):
+        """Checks if the princess can move from the starting position to the ending position.
+
+        Args:
+            start (tuple): A tuple (str, int) representing the princess's starting position.
+            end (tuple): A tuple (str, int) representing the princess's ending position.
+            board (Board, optional): The board on which the move is being made.
+
+        Returns:
+            bool: True if the move is valid, otherwise False.
         """
-        Проверяет, может ли принцесса переместиться с начальной позиции на конечную.
-
-        Параметры:
-            start (tuple): Кортеж из двух элементов (str, int), представляющий начальную позицию принцессы.
-            end (tuple): Кортеж из двух элементов (str, int), представляющий конечную позицию принцессы.
-            board (Board, опционально): Доска, на которой выполняется ход.
-
-        Возвращает:
-            bool: True, если ход допустим, иначе False.
-        """
-
-
         start_row, start_col = start
         end_row, end_col = end
         start_col_num = ord(start_col) - ord('a')
         end_col_num = ord(end_col) - ord('a')
         target = board.markup[end_col][end_row - 1]
 
-
         if self.can_eat_enemy(target):
             return True
-
 
         if self.has_eaten == True:
             if board.move_count % 2 == 0:
@@ -753,14 +666,11 @@ class Princess(Figure):
         return False
 
     def __str__(self):
+        """Returns the string representation of the princess.
+
+        Returns:
+            str: The third letter of the princess's name.
         """
-        Магический метод, возвращающий строковое представление объекта.
-
-        Возвращает:
-            str: Строковое представление объекта.
-        """
-
-
         return self.name[2]
 
 
