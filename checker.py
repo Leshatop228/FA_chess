@@ -1,4 +1,4 @@
-class Board:
+class Board1:
     def __init__(self):
         self.NONE = None
         self.move_count = 0
@@ -142,6 +142,6 @@ class Checker(Figure):
         return False
 
 
-
-board = Board()
-board.play()
+if __name__ == "__main__":
+    board = Board1()
+    board.play()

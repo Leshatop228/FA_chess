@@ -507,7 +507,7 @@ class King(Figure):
             board (Board, опционально): Доска, на которой выполняется ход.
 
         Возвращает:
-            bool: True, если ход допустим, иначе False.
+            bool: True, если ход допустим, иначе False
         """
 
 
@@ -764,9 +764,10 @@ class Princess(Figure):
         return self.name[2]
 
 
-
 board = Board()
-print("Доска до хода:")
-board.draw_board()
 
-game = board.Whose_move()
+if __name__ == "__main__":
+    print("Доска до хода:")
+    board.draw_board()
+
+    game = board.Whose_move()
