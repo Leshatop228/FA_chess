@@ -34,9 +34,9 @@ class Board1:
         while True:
             # user_input = input(f"Введите координаты фигуры :  {'белых' if turn == 'white' else 'черных'} (например, 'a2'): ")
             if turn == 'white':
-                user_input = input(f'Введите координаты фигуры Белых, например (a,2) или undo (откат) : ')
+                user_input = input(f'Введите координаты шашки Белых, например (3,2) или undo (откат) : ')
             else:
-                user_input = input(f'Введите координаты фигуры  Черных, например (a,2)  или undo (откат) : ')
+                user_input = input(f'Введите координаты шашки  Черных, например (a,4)  или undo (откат) : ')
 
             if len(user_input) == 0:
                 return ''
@@ -95,13 +95,22 @@ class Board1:
         turn = 'white'
         while True:
             self.draw_board()
-            print(f"Ход {'белых' if turn == 'white' else 'черных'}.")
+            # print(f"Ход {'белых' if turn == 'white' else 'черных'}.")
+            if turn == 'white':
+                print('Ход белых ')
+            else:
+                print('Ход черных')
             start = self.get_position(turn)
             end = self.get_position(turn)
             if self.move_figure(start, end, turn):
-                turn = 'black' if turn == 'white' else 'white'
-
-
+                if turn == 'white':
+                    turn = 'black'
+                    
+                elif turn == 'black':
+                    
+                    turn = 'white'
+           
+                    
 class Figure:
     def __init__(self, name, color):
         self.name = name
